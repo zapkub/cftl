@@ -1,0 +1,67 @@
+{{define "script_tags"}}
+<script>
+    var require = {
+        paths: {
+            "vs": "https://unpkg.com/monaco-editor/min/vs",
+            "monaco-vim": "https://unpkg.com/monaco-vim/dist/monaco-vim",
+            "monaco-emacs": "https://unpkg.com/monaco-emacs/dist/monaco-emacs"
+        }
+    };
+</script>
+<script src="https://unpkg.com/monaco-editor/min/vs/loader.js"></script>
+<script src="https://unpkg.com/monaco-editor@0.18.1/min/vs/editor/editor.main.nls.js"></script>
+<script src="https://unpkg.com/monaco-editor@0.18.1/min/vs/editor/editor.main.js"></script>
+<style>
+    .editor-ide-container {
+        display: flex;
+    }
+</style>
+{{end}}
+
+{{define "main_content"}}
+<h1>
+    Editor
+</h1>
+<code>
+    find a result by sum of number which multiply of 3 and 5
+    from 1 to N; 1 < N < 10^9
+
+</code>
+<div class="" style="text-align: center;">
+    <button onclick="execute()">Run</button>
+</div>
+<div class="editor-ide-container">
+    <div style="width:480px;height:300px;" id="container"></div>
+    <div style="flex-grow:1;background-color: lightblue;" >
+        <h2>result here</h2>
+        <code id="result" >
+
+        </code>
+    </div>
+</div>
+{{end}}
+
+{{define "post_content"}}
+<script>
+    let editor
+    window.onload = function () {
+        console.log('initialize editor')
+        editor = monaco.editor.create(document.getElementById("container"), {
+            value: "function hello() {\n\tconsole.log('Hello world!');\n}\nhello();",
+            language: "javascript"
+        });
+    }
+
+    async function execute() {
+        const formdata = new FormData()
+        formdata.append("source", editor.getValue())
+        const data = new URLSearchParams();
+        for (const pair of formdata) {
+            data.append(pair[0], pair[1]);
+        }
+        const result = await fetch("/apis/execute", { method: "POST", body: data })
+        const stdout = await result.text()
+        document.getElementById("result").innerText = stdout
+    }
+</script>
+{{end}}

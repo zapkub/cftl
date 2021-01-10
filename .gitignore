@@ -16,3 +16,6 @@
 
 dist
 bin
+
+.cftl
+app.conf

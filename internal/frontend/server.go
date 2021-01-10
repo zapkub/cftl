@@ -9,13 +9,21 @@ import (
 	"net/http"
 
 	"github.com/google/safehtml/template"
+	"github.com/zapkub/cftl/internal/auth"
 	"github.com/zapkub/cftl/internal/fsutil"
 	"github.com/zapkub/cftl/internal/logger"
 )
 
 type Server struct {
-	templateDir template.TrustedSource
-	templates   map[string]*template.Template
+	templateDir   template.TrustedSource
+	templates     map[string]*template.Template
+	authenticator *auth.Authenticator
+}
+
+func New(authenticator *auth.Authenticator) *Server {
+	return &Server{
+		authenticator: authenticator,
+	}
 }
 
 func (s *Server) Install(m *http.ServeMux) {
@@ -26,6 +34,8 @@ func (s *Server) Install(m *http.ServeMux) {
 	s.templates = parsePageTemplates(s.templateDir)
 
 	m.Handle("/editor", http.HandlerFunc(s.editorPageHandler))
+	m.Handle("/auth/github_callback", http.HandlerFunc(s.githubCallbackhandler))
+	m.Handle("/auth", http.HandlerFunc(s.authPageHandler))
 	m.Handle("/", http.HandlerFunc(s.indexPageHandler))
 
 }
@@ -74,6 +84,8 @@ func parsePageTemplates(dir template.TrustedSource) map[string]*template.Templat
 
 	htmlSets := [][]template.TrustedSource{
 		{tsc("editor.html")},
+		{tsc("auth.html")},
+		{tsc("auth_callback.html")},
 		{tsc("index.html")},
 	}
 

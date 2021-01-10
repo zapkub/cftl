@@ -1,0 +1,17 @@
+{{define "main_content"}}
+
+<a href="https://github.com/login/oauth/authorize?scope=user:email&client_id={{.GithubClientID}}" (click)="githubLogin()">login with github</a>
+
+{{end}}
+
+{{define "post_content"}}
+
+<script>
+
+    function githubLogin() {
+
+    }
+
+</script>
+
+{{end}}

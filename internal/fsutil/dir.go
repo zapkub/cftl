@@ -23,5 +23,6 @@ func initialdefault() *Manager {
 
 	return &Manager{
 		ExecDir: path.Dir(execpath),
+		AppDir:  createAppDir(),
 	}
 }

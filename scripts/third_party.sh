@@ -8,9 +8,14 @@ export os=darwin
 export nodejs="node-v14.15.3-"$os"-x64"
 nodejspkg=$nodejs".tar.xz"
 
+echo "setup nodejs runtime"
+if [ ! -f $PWD/bin/node ]; then
 echo "Downloading NodeJS 14"
 mkdir -p ./dist
 [ ! -f ./dist/$nodejspkg ] && curl -o ./dist/$nodejspkg https://nodejs.org/dist/v14.15.3/$nodejspkg
 echo "Extracting NodeJS bin from "$PWD/dist/$nodejs
 tar -xvf $PWD/dist/$nodejspkg -C $PWD/bin --strip-components 2 $nodejs/bin/node 
 echo "Done"
+else
+    echo "node bin is already exists in bin. skipped"
+fi

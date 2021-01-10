@@ -7,13 +7,23 @@ import (
 	"log"
 	"os"
 	"path"
+
+	"github.com/zapkub/cftl/internal/logger"
 )
 
 func initialdefault() *Manager {
 	wd, _ := os.Getwd()
+	var appdir = path.Join(wd, ".cftl")
+	err := os.MkdirAll(appdir, Defaultprem)
+	if err != nil {
+		logger.Fatalf(nil, "cannot initlize app dir (%s): %v", appdir, err)
+	}
 
 	m := &Manager{
 		ExecDir: path.Join(wd, "bin"),
+
+		// appdir is $rootWorkspace/.cftl
+		AppDir: appdir,
 	}
 	// checking if the development running in the right place
 	// which is workspaceroot

@@ -8,3 +8,10 @@ mkdir -p $PWD/bin
 
 $DIR/third_party.sh
 
+echo "config file copying..."
+if [ ! -f $PWD/.cftl/app.conf ]; then
+    mkdir -p ./.cftl
+    cp ./internal/conf/app.example.conf ./.cftl/app.conf
+else
+    echo "config file exists in ./.cftl skipped"
+fi
